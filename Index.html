@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>RT Digital Parkville</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --bg1:#6ec6ff;
+  --bg2:#eaf6ff;
+  --card:rgba(255,255,255,0.2);
+  --text:#111;
+  --primary:#2563eb;
+}
+body.dark{
+  --bg1:#0b1220;
+  --bg2:#111c33;
+  --card:rgba(255,255,255,0.08);
+  --text:#e2e8f0;
+  --primary:#38bdf8;
+}
+body{
+  margin:0;
+  font-family:Arial;
+  background:linear-gradient(var(--bg1),var(--bg2));
+  color:var(--text);
+}
+.header{
+  background:var(--primary);
+  color:white;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+}
+.menu{
+  display:flex;
+  gap:10px;
+  padding:10px;
+  flex-wrap:wrap;
+}
+.menu button{
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+.tab{display:none;padding:15px}
+.active{display:block}
+.card{
+  backdrop-filter:blur(10px);
+  padding:15px;
+  margin:10px 0;
+  border-radius:12px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:rgba(255,255,255,0.3);
+}
+th{
+  background:var(--primary);
+  color:#fff;
+  padding:8px;
+}
+td{
+  padding:8px;
+  border-bottom:1px solid #ccc;
+}
+.good{color:green;font-weight:bold}
+.bad{color:red;font-weight:bold}
+.wa{background:#25D366;color:white}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h3>🏘️ RT 05 RW 04 Cluster Parkville</h3>
+  <button onclick="toggleMode()">🌙</button>
+</div>
+
+<div class="card">
+  <p>
+    RT 05 RW 04 Cluster Parkville merupakan lingkungan warga yang terus berkembang, 
+    dibangun atas dasar kebersamaan, gotong royong, dan kepedulian antar sesama warga.
+  </p>
+</div>
+
+<div class="menu">
+  <button onclick="openTab('dashboard')">Dashboard</button>
+  <button onclick="openTab('warga')">Warga</button>
+  <button onclick="openTab('keuangan')">Keuangan</button>
+  <button onclick="openTab('tunggakan')">Tunggakan</button>
+  <button onclick="openTab('pengumuman')">Pengumuman</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="tab active">
+  <div class="card">
+    <h3>📊 Summary</h3>
+    <p>Warga: <span id="wargaCount"></span></p>
+    <p>Iuran: <span id="iuran"></span></p>
+    <p>Sampah: <span id="sampah"></span></p>
+    <p>Total Masuk: <span id="masuk"></span></p>
+    <p>Keluar: <span id="keluar"></span></p>
+    <p>Saldo Awal: <span id="saldoAwal"></span></p>
+    <p><b>Saldo: <span id="saldo"></span></b></p>
+  </div>
+
+  <div class="card">
+    <h3>📞 Kontak</h3>
+    <div id="kontak"></div>
+  </div>
+</div>
+
+<!-- WARGA -->
+<div id="warga" class="tab">
+  <div class="card">
+    <h3>👥 Data Warga</h3>
+    <table id="tbWarga"></table>
+  </div>
+</div>
+
+<!-- KEUANGAN -->
+<div id="keuangan" class="tab">
+  <div class="card">
+    <h3>💰 Keuangan</h3>
+    <table id="tbKeu"></table>
+  </div>
+</div>
+
+<!-- TUNGGAKAN -->
+<div id="tunggakan" class="tab">
+  <div class="card">
+    <h3>⚠️ Tunggakan</h3>
+    <table id="tbTunggakan"></table>
+  </div>
+</div>
+
+<!-- PENGUMUMAN -->
+<div id="pengumuman" class="tab">
+  <div id="listPengumuman"></div>
+</div>
+
+<script>
+
+/* ===== URL ===== */
+const URL_W="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=941193884";
+const URL_B="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=595238022";
+const URL_K="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=1027936274";
+const URL_S="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=1872595743";
+const URL_PROFILE="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=422911818";
+const URL_PENGUMUMAN="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=941802545";
+const URL_SALDO="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=508041483";
+
+/* ===== GLOBAL ===== */
+let W=[],B=[],K=[],S=[],P=[],PG=[],SA=[];
+
+/* ===== CSV ===== */
+function csv(t){
+  let l=t.trim().split("\n");
+  let d=l[0].includes("\t")?"\t":",";
+  let h=l[0].split(d).map(x=>x.trim().toLowerCase());
+
+  return l.slice(1).map(r=>{
+    let c=r.split(d);
+    let o={};
+    h.forEach((x,i)=>o[x]=(c[i]||"").trim());
+    return o;
+  });
+}
+
+/* ===== NUMBER ===== */
+function num(x){
+  if(!x) return 0;
+  let s=x.toString().replace(/\./g,"").replace(",",".");
+  return parseFloat(s)||0;
+}
+
+/* ===== RUPIAH ===== */
+function rp(x){
+  return "Rp "+(x||0).toLocaleString("id-ID");
+}
+
+/* ===== LOAD ===== */
+async function load(){
+  let [w,b,k,s,p,pg,sa]=await Promise.all([
+    fetch(URL_W).then(r=>r.text()),
+    fetch(URL_B).then(r=>r.text()),
+    fetch(URL_K).then(r=>r.text()),
+    fetch(URL_S).then(r=>r.text()),
+    fetch(URL_PROFILE).then(r=>r.text()),
+    fetch(URL_PENGUMUMAN).then(r=>r.text()),
+    fetch(URL_SALDO).then(r=>r.text())
+  ]);
+
+  W=csv(w);
+  B=csv(b);
+  K=csv(k);
+  S=csv(s);
+  P=csv(p);
+  PG=csv(pg);
+  SA=csv(sa);
+
+  render();
+}
+
+/* ===== RENDER ===== */
+function render(){
+
+  let iuran=B.reduce((a,b)=>a+num(b.jumlah),0);
+  let sampah=S.reduce((a,s)=>a+num(s.jumlah),0);
+  let keluar=K.reduce((a,b)=>a+num(b.jumlah),0);
+
+  let saldoAwal = SA.length ? num(SA[0].saldo) : 0;
+  let masuk=iuran+sampah;
+  let saldo=saldoAwal + masuk - keluar;
+
+  document.getElementById("wargaCount").innerText=W.length;
+  document.getElementById("iuran").innerText=rp(iuran);
+  document.getElementById("sampah").innerText=rp(sampah);
+  document.getElementById("masuk").innerText=rp(masuk);
+  document.getElementById("keluar").innerText=rp(keluar);
+  document.getElementById("saldoAwal").innerText=rp(saldoAwal);
+  document.getElementById("saldo").innerText=rp(saldo);
+
+  kontak();
+  warga();
+  keuangan();
+  tunggakan();
+  pengumuman();
+}
+
+/* ===== KONTAK ===== */
+function kontak(){
+  let div=document.getElementById("kontak");
+  div.innerHTML="";
+
+  P.forEach(x=>{
+    let link="https://wa.me/"+x.wa;
+    div.innerHTML+=`
+      <p>${x.jabatan}: ${x.nama}
+      <a href="${link}" target="_blank">
+      <button class="wa">Chat</button></a></p>`;
+  });
+}
+
+/* ===== WARGA ===== */
+function warga(){
+  let tb=document.getElementById("tbWarga");
+  tb.innerHTML="<tr><th>ID</th><th>Nama</th><th>Rumah</th></tr>";
+  W.forEach(w=>{
+    tb.innerHTML+=`<tr><td>${w.id}</td><td>${w.nama}</td><td>${w.rumah}</td></tr>`;
+  });
+}
+
+/* ===== KEUANGAN ===== */
+function keuangan(){
+  let tb=document.getElementById("tbKeu");
+  tb.innerHTML="<tr><th>Tanggal</th><th>Keterangan</th><th>Jumlah</th></tr>";
+
+  B.forEach(x=>tb.innerHTML+=`<tr><td>${x.tanggal}</td><td>Iuran</td><td>${rp(num(x.jumlah))}</td></tr>`);
+  S.forEach(x=>tb.innerHTML+=`<tr><td>${x.tanggal}</td><td>Sampah</td><td>${rp(num(x.jumlah))}</td></tr>`);
+  K.forEach(x=>tb.innerHTML+=`<tr><td>${x.tanggal}</td><td>${x.keterangan}</td><td>${rp(num(x.jumlah))}</td></tr>`);
+}
+
+/* ===== TUNGGAKAN ===== */
+function tunggakan(){
+  let tb=document.getElementById("tbTunggakan");
+  tb.innerHTML="<tr><th>Nama</th><th>Status</th></tr>";
+
+  W.forEach(w=>{
+    let ok=B.some(x=>x.warga_id==w.id);
+    tb.innerHTML+=`<tr><td>${w.nama}</td><td class="${ok?'good':'bad'}">${ok?'Lunas':'Belum'}</td></tr>`;
+  });
+}
+
+/* ===== PENGUMUMAN ===== */
+function pengumuman(){
+  let list = PG.filter(x=>x.status=="aktif" || !x.status);
+
+  let html="";
+  list.forEach(d=>{
+    html+=`
+    <div class="card">
+      <h3>${d.judul||"-"}</h3>
+      <p>${d.isi||"-"}</p>
+      <p><b>${d.tanggal||""}</b></p>
+    `;
+
+    if((d.tipe||"")=="iuran"){
+      html+=`
+        <p>${d.bank} ${d.rekening} a/n ${d.atas_nama}</p>
+        <img src="${d.qr_url||""}" width="200">
+      `;
+    }
+
+    html+=`</div>`;
+  });
+
+  document.getElementById("listPengumuman").innerHTML=html;
+}
+
+/* ===== NAV ===== */
+function openTab(id){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+/* ===== MODE ===== */
+function toggleMode(){
+  document.body.classList.toggle("dark");
+}
+
+load();
+
+</script>
+
+</body>
+</html>
