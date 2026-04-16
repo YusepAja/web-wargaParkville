@@ -118,7 +118,7 @@ body{
   <img src="Logo.png" class="logo">
 
   <div class="title">
-    <h2>Rukun Tetangga 005 / Rukun Warga 004</h2>
+    <h2>Rukun Tetangga 005 Rukun Warga 004</h2>
     <h3>Cluster Parkville Citra Maja Raya</h3>
     <p>Desa Curugbadak Kecamatan Maja Kabupaten Lebak</p>
     <p>Sekretariat : Jl Parkville 10 Blok A11/31 rt5parkville@gmail.com</p>
@@ -327,11 +327,18 @@ function tunggakan(){
   tb.innerHTML="<tr><th>Nama</th><th>Status</th></tr>";
 
   W.forEach(w=>{
-    let ok=B.some(x=>x.warga_id==w.id);
-    tb.innerHTML+=`<tr><td>${w.nama}</td><td class="${ok?'good':'bad'}">${ok?'Lunas':'Belum'}</td></tr>`;
+    let ok = B.some(x=>x.warga_id == w.id);
+
+    // ✅ hanya tampil yang BELUM LUNAS
+    if(!ok){
+      tb.innerHTML += `
+        <tr>
+          <td>${w.nama}</td>
+          <td class="bad">Belum</td>
+        </tr>`;
+    }
   });
 }
-
 /* ===== PENGUMUMAN ===== */
 function pengumuman(){
   let list = PG.filter(x=>x.status=="aktif" || !x.status);
