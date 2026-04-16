@@ -2,9 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>RT Digital Parkville</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>RT Cluster Parkville</title>
 
 <style>
 :root{
@@ -14,6 +12,7 @@
   --text:#111;
   --primary:#2563eb;
 }
+
 body.dark{
   --bg1:#0b1220;
   --bg2:#111c33;
@@ -21,66 +20,112 @@ body.dark{
   --text:#e2e8f0;
   --primary:#38bdf8;
 }
+
 body{
   margin:0;
   font-family:Arial;
   background:linear-gradient(var(--bg1),var(--bg2));
   color:var(--text);
 }
-.header{
-  background:var(--primary);
-  color:white;
-  padding:15px;
+
+/* ===== HEADER PREMIUM ===== */
+.header-rt{
   display:flex;
-  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:15px 20px;
+  
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  color:white;
+
+  border-bottom:3px solid rgba(255,255,255,0.3);
+  box-shadow:0 5px 20px rgba(0,0,0,0.2);
 }
+
+.logo{
+  width:70px;
+  border-radius:10px;
+  background:white;
+  padding:5px;
+}
+
+.title{
+  flex:1;
+  text-align:center;
+}
+
+.title h2{
+  margin:0;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.title h3{
+  margin:2px 0;
+  font-size:14px;
+}
+
+.title p{
+  margin:0;
+  font-size:12px;
+  opacity:0.9;
+}
+
+/* ===== UI ===== */
 .menu{
   display:flex;
   gap:10px;
   padding:10px;
   flex-wrap:wrap;
 }
+
 .menu button{
   padding:10px;
   border:none;
   border-radius:8px;
   cursor:pointer;
+  background:var(--primary);
+  color:white;
 }
+
 .tab{display:none;padding:15px}
 .active{display:block}
+
 .card{
   backdrop-filter:blur(10px);
   padding:15px;
-  margin:10px 0;
+  margin:10px;
   border-radius:12px;
   box-shadow:0 8px 20px rgba(0,0,0,0.1);
 }
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:rgba(255,255,255,0.3);
+
+.toggle{
+  position:fixed;
+  top:10px;
+  right:10px;
+  padding:8px 10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
 }
-th{
-  background:var(--primary);
-  color:#fff;
-  padding:8px;
-}
-td{
-  padding:8px;
-  border-bottom:1px solid #ccc;
-}
-.good{color:green;font-weight:bold}
-.bad{color:red;font-weight:bold}
-.wa{background:#25D366;color:white}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h3>🏘️ RT 05 RW 04 Cluster Parkville</h3>
-  <button onclick="toggleMode()">🌙</button>
+<!-- HEADER -->
+<div class="header-rt">
+  <img src="Logo.png" class="logo">
+
+  <div class="title">
+    <h2>Rukun Tetangga 005 Rukun Warga 004</h2>
+    <h3>Cluster Parkville Citra Maja Raya</h3>
+    <p>Desa Curugbadak Kecamatan Maja Kabupaten Lebak</p>
+    <p>Sekretariat : Jl Parkville 10 Blok A11/31 rt5parkville@gmail.com</p>
+  </div>
 </div>
+
+<button class="toggle" onclick="toggleMode()">🌙</button>
 
 <div class="card">
   <p>
@@ -88,6 +133,15 @@ td{
     dibangun atas dasar kebersamaan, gotong royong, dan kepedulian antar sesama warga.
   </p>
 </div>
+
+<script>
+function toggleMode(){
+  document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
 
 <div class="menu">
   <button onclick="openTab('dashboard')">Dashboard</button>
