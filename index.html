@@ -22,17 +22,44 @@ body{
   font-family:'Poppins', sans-serif;
   color:var(--text);
 
-  background: linear-gradient(135deg,#6ec6ff,#eaf6ff);
+  background: linear-gradient(135deg,#bbf7d0,#4ade80,#22c55e);
 
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(255,255,252,0.1), transparent 40%),
-    radial-gradient(circle at 80% 30%, rgba(255,255,255,0.3), transparent 40%);
+  background-size: 400% 400%;
+  animation: bgGerak 15s ease infinite;
+}
+
+@keyframes bgGerak{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
 }
 
 /* ===== DARK MODE ===== */
+body.dark .card{
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(34,197,94,0.4);
+
+  box-shadow: 
+    0 0 20px rgba(34,197,94,0.4),
+    0 0 60px rgba(34,197,94,0.2);
+}
+
 body.dark{
-  background: linear-gradient(135deg,#0b1220,#111c33);
+  background: radial-gradient(circle at top, #022c22, #000);
+}
+body.dark{
+  background: linear-gradient(135deg,#022c22,#064e3b,#022c22);
   color:#e2e8f0;
+}
+
+/* glow neon */
+body.dark .card{
+  box-shadow: 0 0 20px rgba(34,197,94,0.4),
+              0 0 40px rgba(34,197,94,0.2);
+}
+
+body.dark .menu button{
+  box-shadow: 0 0 15px rgba(34,197,94,0.5);
 }
 
 /* ===== HEADER ===== */
@@ -96,10 +123,15 @@ body.dark{
   padding:20px;
   border-radius:16px;
 
-  background:linear-gradient(135deg, #4ade80, #bbf7d0);
-  backdrop-filter:blur(15px);
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 
-  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+
+  box-shadow: 
+    0 10px 30px rgba(0,0,0,0.2),
+    inset 0 0 20px rgba(255,255,255,0.2);
 
   animation:fadeUp 0.6s ease;
 }
@@ -148,6 +180,28 @@ td{
 @keyframes fadeDown{
   from{opacity:0;transform:translateY(-20px)}
   to{opacity:1;transform:translateY(0)}
+}
+/* ===== HUJAN DAUN ===== */
+.leaf {
+  position: fixed;
+  top: -50px;
+  font-size: 20px;
+  pointer-events: none;
+  animation: fall linear forwards;
+  z-index: 999;
+  opacity: 0.8;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-50px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {opacity:1;}
+  100% {
+    transform: translateY(110vh) translateX(100px) rotate(360deg);
+    opacity: 0;
+  }
 }
 </style>
 </head>
@@ -265,7 +319,27 @@ function num(x){
 function rp(x){
   return "Rp "+x.toLocaleString("id-ID");
 }
+/* ===== HUJAN DAUN ===== */
+function hujanDaun(){
+  setInterval(()=>{
+    let leaf = document.createElement("div");
+    leaf.className = "leaf";
 
+    const daun = ["🍃","🍂","🌿"];
+    leaf.innerText = daun[Math.floor(Math.random()*daun.length)];
+
+    leaf.style.left = Math.random() * window.innerWidth + "px";
+
+    // speed beda2
+    leaf.style.animationDuration = (4 + Math.random()*6) + "s, 3s";
+
+    leaf.style.fontSize = (15 + Math.random()*25) + "px";
+
+    document.body.appendChild(leaf);
+
+    setTimeout(()=>leaf.remove(),10000);
+  }, 250);
+}
 /* ===== LOAD ===== */
 async function load(){
   let [w,b,k,s,p,pg,sa]=await Promise.all([
@@ -304,6 +378,7 @@ function render(){
   kontak();
   pengumuman();
   grafik();
+  hujanDaun();
 }
 
 /* ===== GRAFIK ===== */
