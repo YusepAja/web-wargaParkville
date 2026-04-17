@@ -490,8 +490,6 @@ function loadMedia(){
 
     rows.forEach((r,i) => {
 
-      if(i === 0) return; // skip header (optional)
-
       let kegiatan = r.c[0]?.v || "";
       let link = r.c[1]?.v || "";
       let keterangan = r.c[2]?.v || "";
