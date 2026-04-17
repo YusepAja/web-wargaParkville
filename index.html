@@ -235,6 +235,7 @@ td{
   <button onclick="openTab('keuangan')">Keuangan</button>
   <button onclick="openTab('tunggakan')">Tunggakan</button>
   <button onclick="openTab('pengumuman')">Pengumuman</button>
+  <button onclick="openTab('Media')">Kegiatan Warga</button>
 </div>
 
 <!-- DASHBOARD -->
@@ -287,6 +288,12 @@ td{
   <div id="listPengumuman"></div>
 </div>
 
+<div id="Media" class="tab">
+  <div class="card">
+    <h3>📸 Kegiatan Warga</h3>
+    <div id="gallery"></div>
+  </div>
+</div>
 <script>
 
 /* ===== URL (7 DATA) ===== */
@@ -297,6 +304,8 @@ const URL_S="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7k
 const URL_PROFILE="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=422911818";
 const URL_PENGUMUMAN="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=941802545";
 const URL_SALDO="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=508041483";
+
+const URL_MEDIA = "https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/gviz/tq?tqx=out:json&gid=784856855";
 
 let W=[],B=[],K=[],S=[],P=[],PG=[],SA=[];
 
@@ -453,10 +462,67 @@ function pengumuman(){
     div.innerHTML+=`<div class="card"><h3>${x.judul}</h3><p>${x.isi}</p></div>`;
   });
 }
+function convertDrive(link){
+  if(!link) return "";
+  let match = link.match(/[-\w]{25,}/);
+  return match 
+    ? `https://drive.google.com/thumbnail?id=${match[0]}&sz=w1000`
+    : "";
+}
+function loadMedia(){
 
+  fetch(URL_MEDIA)
+  .then(res => res.text())
+  .then(data => {
+
+    let match = data.match(/google\.visualization\.Query\.setResponse\((.*)\);/s);
+
+    if(!match){
+      document.getElementById("gallery").innerHTML = "Data gagal dibaca";
+      console.log("RAW:", data);
+      return;
+    }
+
+    const json = JSON.parse(match[1]);
+    const rows = json.table.rows;
+
+    let html = "";
+
+    rows.forEach((r,i) => {
+
+      if(i === 0) return; // skip header (optional)
+
+      let kegiatan = r.c[0]?.v || "";
+      let link = r.c[1]?.v || "";
+      let keterangan = r.c[2]?.v || "";
+
+      html += `
+        <div style="width:200px;margin:10px;display:inline-block;">
+          <img src="${convertDrive(link)}" 
+               style="width:100%;border-radius:10px"
+               onerror="this.src='https://via.placeholder.com/200x150?text=No+Image'">
+          <b>${kegiatan}</b>
+          <p style="font-size:12px">${keterangan}</p>
+        </div>
+      `;
+    });
+
+    document.getElementById("gallery").innerHTML = html || "Tidak ada data";
+
+  })
+  .catch(err=>{
+    console.log(err);
+    document.getElementById("gallery").innerHTML = "Error load data";
+  });
+
+}
 function openTab(id){
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   document.getElementById(id).classList.add("active");
+
+  if(id === "Media"){
+    loadMedia(); // 🔥 load foto saat tab dibuka
+  }
 }
 
 function toggleMode(){
