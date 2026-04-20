@@ -539,7 +539,6 @@ function loadIklan(){
     document.getElementById("listIklan").innerHTML = "Error load data";
   });
 }
-
 function loadMedia(){
 
   fetch(URL_MEDIA)
@@ -698,8 +697,15 @@ function openTab(id){
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 
+  // 🔥 MEDIA FIX ANTI HITAM
   if(id === "Media"){
-    loadMedia(); // 🔥 load foto saat tab dibuka
+    setTimeout(()=>{
+      loadMedia();
+    }, 200); // kasih delay biar tab sudah render dulu
+  }
+
+  if(id === "iklan"){
+    loadIklan();
   }
 }
 
