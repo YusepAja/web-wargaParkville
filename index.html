@@ -238,6 +238,7 @@ td{
 <div class="menu">
   <button onclick="openTab('dashboard')">Dashboard</button>
   <button onclick="openTab('warga')">Warga</button>
+  <button onclick="openTab('iklan')">⭐ Lapak Warga ⭐</button>
   <button onclick="openTab('keuangan')">Keuangan</button>
   <button onclick="openTab('tunggakan')">Tunggakan</button>
   <button onclick="openTab('pengumuman')">Info Warga</button>
@@ -273,6 +274,12 @@ td{
   </div>
 </div>
 
+<div id="iklan" class="tab">
+  <div class="card">
+    <h3>⭐ Lapak Warga ⭐</h3>
+    <div id="listIklan"></div>
+  </div>
+</div>
 <!-- KEUANGAN -->
 <div id="keuangan" class="tab">
   <div class="card">
@@ -312,6 +319,8 @@ const URL_PENGUMUMAN="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1Cg
 const URL_SALDO="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=508041483";
 
 const URL_MEDIA = "https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/gviz/tq?tqx=out:json&gid=784856855";
+const URL_LAPAK =
+"https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/gviz/tq?tqx=out:json&gid=1556678723";
 
 let W=[],B=[],K=[],S=[],P=[],PG=[],SA=[];
 
@@ -394,6 +403,7 @@ function render(){
   pengumuman();
   grafik();
   hujanDaun();
+  loadIklan();
 }
 
 /* ===== GRAFIK ===== */
@@ -474,6 +484,60 @@ function convertDrive(link){
   return match 
     ? `https://drive.google.com/thumbnail?id=${match[0]}&sz=w1000`
     : "";
+}
+/* ===== LOAD IKLAN ===== */
+function loadIklan(){
+
+  fetch(URL_LAPAK)
+  .then(r=>r.text())
+  .then(data=>{
+
+    let match = data.match(/google\.visualization\.Query\.setResponse\((.*)\);/s);
+    if(!match){
+      document.getElementById("listIklan").innerHTML = "Data tidak terbaca";
+      return;
+    }
+
+    let json = JSON.parse(match[1]);
+    let rows = json.table.rows || [];
+
+    let html = "";
+
+    rows.reverse().forEach(r=>{
+
+      let penjual = r.c[0]?.v || "";
+      let judul   = r.c[1]?.v || "";
+      let desc    = r.c[2]?.v || "";
+      let harga   = r.c[3]?.v || 0;
+      let kontak  = r.c[4]?.v || "";
+      let img     = convertDrive(r.c[5]?.v || "");
+
+      html += `
+      <div style="display:inline-block;width:200px;margin:10px;
+      background:white;padding:10px;border-radius:12px">
+
+        <img src="${img}" style="width:100%;height:140px;object-fit:cover;border-radius:10px"
+        onerror="this.src='https://via.placeholder.com/200x140'">
+
+        <b>${judul}</b>
+        <p style="font-size:12px">${penjual}</p>
+        <p>${desc}</p>
+        <p><b>Rp ${Number(harga).toLocaleString()}</b></p>
+
+        <a href="https://wa.me/${kontak}" target="_blank"
+        style="display:block;background:#25D366;color:white;text-align:center;padding:5px;border-radius:8px">
+        Chat
+        </a>
+
+      </div>`;
+    });
+
+    document.getElementById("listIklan").innerHTML = html || "Belum ada data";
+  })
+  .catch(err=>{
+    console.log(err);
+    document.getElementById("listIklan").innerHTML = "Error load data";
+  });
 }
 
 function loadMedia(){
