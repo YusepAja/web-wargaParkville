@@ -4,245 +4,139 @@
 <meta charset="UTF-8">
 <title>Cluster Parkville</title>
 
-<!-- FONT MODERN -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-:root{
-  --primary:#2563eb;
-  --secondary:#38bdf8;
-  --text:#0f172a;
+body.landing .header {
+  display:block;
 }
 
-/* ===== GLOBAL ===== */
-body{
+body.landing .tab {
+  display:none !important;
+}
+
+/* kalau bukan landing */
+body:not(.landing) .header {
+  display:none;
+}
+body {
   margin:0;
-  font-family:'Poppins', sans-serif;
-  color:var(--text);
-
-  background: linear-gradient(to bottom, #dbeafe, #f0f9ff);
-
-  background-size: 400% 400%;
+  font-family:Poppins,Arial;
+  background:#f1f5f9;
   animation: bgGerak 15s ease infinite;
 }
-
+@keyframes fall {
+  0% {
+    transform: translateY(-50px) translateX(0) rotate(0deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(100vh) translateX(100px) rotate(360deg);
+    opacity: 0;
+  }
+}
 @keyframes bgGerak{
   0%{background-position:0% 50%;}
   50%{background-position:100% 50%;}
   100%{background-position:0% 50%;}
 }
 
-/* ===== DARK MODE ===== */
-body.dark .card{
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(34,197,94,0.4);
-
-  box-shadow: 
-    0 0 20px rgba(34,197,94,0.4),
-    0 0 60px rgba(34,197,94,0.2);
-}
-
-body.dark{
-  background: radial-gradient(circle at top, #022c22, #000);
-}
-body.dark{
-  background: linear-gradient(135deg,#022c22,#064e3b,#022c22);
-  color:#e2e8f0;
-}
-
-/* glow neon */
-body.dark .card{
-  box-shadow: 0 0 20px rgba(34,197,94,0.4),
-              0 0 40px rgba(34,197,94,0.2);
-}
-
-body.dark .menu button{
-  box-shadow: 0 0 15px rgba(34,197,94,0.5);
-}
-
-/* ===== HEADER ===== */
-.header-rt{
-  display:flex;
-  align-items:center;
-  gap:15px;
-  padding:15px 20px;
-
-  background: linear-gradient(135deg, #dbeafe, #f0f9ff);
-  color:#1E3A8A;
-
-  box-shadow:0 5px 20px rgba(0,0,0,0.08);
-  animation:fadeDown 0.6s ease;
-}
-.logo{
-  width:70px;
-  border-radius:12px;
-  background:white;
-  padding:5px;
-}
-
-.title{
-  flex:1;
-  text-align:center;
-}
-
-.title h2{margin:0;font-weight:600;}
-.title h3{margin:2px 0;font-size:14px;}
-.title p{margin:0;font-size:12px;opacity:0.9}
-
-/* ===== MENU ===== */
-.menu{
-  display:flex;
-  gap:10px;
-  padding:10px;
-  flex-wrap:wrap;
-}
-
-.menu button{
-  padding:10px 15px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-
-  background:linear-gradient(to bottom, #dbeafe, #f0f9ff);
-  color:Blue;
-
-  box-shadow:0 5px 15px rgba(0,0,0,0.2);
-  transition:0.3s;
-}
-
-.menu button:hover{
-  transform:translateY(-3px) scale(1.05);
-}
-
-/* ===== CARD GLASS ===== */
-.card{
-  margin:15px;
-  padding:20px;
-  border-radius:16px;
-
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-
-  border: 1px solid rgba(255,255,255,0.3);
-
-  box-shadow: 
-    0 10px 30px rgba(0,0,0,0.2),
-    inset 0 0 20px rgba(255,255,255,0.2);
-
-  animation:fadeUp 0.6s ease;
-}
-
-/* ===== TABLE ===== */
-table{
-  overflow:hidden;
-  border-radius:12px;
-}
-
-th:first-child{
-  border-top-left-radius:12px;
-}
-th:last-child{
-  border-top-right-radius:12px;
-}
-
-th{
-  background:#93c5fd;
-  color:black;
-  padding:10px;
-}
-
-td{
-  padding:8px;
-  border-bottom:1px solid #ddd;
-}
-
-.bad{color:#ef4444;font-weight:bold}
-.good{color:#22c55e;font-weight:bold}
-
-/* ===== TAB ===== */
-.tab{display:none}
-.active{display:block}
-
-/* ===== BUTTON MODE ===== */
-.toggle{
+.navbar {
   position:fixed;
-  top:10px;
-  right:10px;
-  border:none;
-  padding:8px 10px;
-  border-radius:10px;
+  top:0;
+  width:100%;
+  padding:15px 30px;
+  display:flex;
+  justify-content:space-between;
+  background:#1e293b;
+  color:white;
+  z-index:1000;
+}
+
+.menu a {
+  margin-left:15px;
   cursor:pointer;
 }
-
-/* ===== ANIMASI ===== */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:translateY(0)}
+.header {
+  transition: all 0.5s ease;
+}
+.header {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* FULL LAYAR */
+  overflow: hidden;
 }
 
-@keyframes fadeDown{
-  from{opacity:0;transform:translateY(-20px)}
-  to{opacity:1;transform:translateY(0)}
+.header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* BIAR GA PEYOT */
 }
+
+.tab {
+  display:none;
+  padding:90px 20px;
+}
+
+.tab.active {
+  display:block;
+}
+
+.card {
+  background:white;
+  padding:20px;
+  margin:15px;
+  border-radius:12px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.1);
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+td,th {
+  border-bottom:1px solid #ddd;
+  padding:8px;
+}
+
+.bad { color:red; }
+
 /* ===== HUJAN DAUN ===== */
 .leaf {
   position: fixed;
   top: -50px;
-  font-size: 20px;
   pointer-events: none;
+  z-index: 9999;
   animation: fall linear forwards;
-  z-index: 999;
-  opacity: 0.8;
-}
-
-@keyframes fall {
-  0% {
-    transform: translateY(-50px) translateX(0) rotate(0deg);
-    opacity: 0;
-  }
-  10% {opacity:1;}
-  100% {
-    transform: translateY(110vh) translateX(100px) rotate(360deg);
-    opacity: 0;
-  }
+  opacity: 0.9;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header-rt">
-  <img src="Logo.png" class="logo">
-  <div class="title">
-    <h2>Citra Maja City Cluster Parkville</h2>
-    <h3>RT 005 / RW 004</h3>
-    <p>Desa Curugbadak Kecamatan Maja</p>
-    <p>Sekretariat : Jl Parkville 10 Blok A11/31</p>
+<div class="navbar">
+  <div onclick="goHome()" style="cursor:pointer;">ParkVille</div>
+  <div class="menu">
+    <a onclick="openTab('dashboard')">Dashboard</a>
+    <a onclick="openTab('warga')">Warga</a>
+    <a onclick="openTab('keuangan')">Keuangan</a>
+    <a onclick="openTab('tunggakan')">Tunggakan</a>
+    <a onclick="openTab('pengumuman')">Info</a>
+    <a onclick="openTab('Media')">Media</a>
+    <a onclick="openTab('iklan')">Lapak</a>
+    <a onclick="openTab('Login')">Login</a>
+  <span class="right-text">|   |</span>
+  <span class="right-text">|   |</span>
+	
   </div>
 </div>
 
-<button class="toggle" onclick="toggleMode()">🌙</button>
-
-<div class="card">
-  <p>
-    Citra Maja City Cluster Parkville RT 05 RW 04 merupakan lingkungan warga yang terus berkembang, 
-    dibangun atas dasar kebersamaan, gotong royong, dan kepedulian antar sesama warga.
-  </p>
-</div>
-
-
-<div class="menu">
-  <button onclick="openTab('dashboard')">Dashboard</button>
-  <button onclick="openTab('warga')">Warga</button>
-  <button onclick="openTab('iklan')">⭐ Lapak Warga ⭐</button>
-  <button onclick="openTab('keuangan')">Keuangan</button>
-  <button onclick="openTab('tunggakan')">Tunggakan</button>
-  <button onclick="openTab('pengumuman')">Info Warga</button>
-  <button onclick="openTab('Media')">Kegiatan Warga</button>
+<!-- HEADER -->
+<div class="header">
+  <img src="rumah.jpg">
 </div>
 
 <!-- DASHBOARD -->
@@ -251,6 +145,12 @@ td{
     <h3>Summary</h3>
     <p>Warga: <span id="wargaCount"></span></p>
     <p>Iuran: <span id="iuran"></span></p>
+    
+    <p style="font-size:12px;color:#64748b">
+      Per Orang: Rp 15.000<br>
+      (Kematian Rp5.000 • Satpam Rp5.000 • Kas Rp5.000)
+    </p>
+    
     <p>Sampah: <span id="sampah"></span></p>
     <p>Saldo: <b id="saldo"></b></p>
   </div>
@@ -264,6 +164,7 @@ td{
     <h3>Kontak</h3>
     <div id="kontak"></div>
   </div>
+
 </div>
 
 <!-- WARGA -->
@@ -309,7 +210,7 @@ td{
 </div>
 <script>
 
-/* ===== URL (7 DATA) ===== */
+/* URL */
 const URL_W="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=941193884";
 const URL_B="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=595238022";
 const URL_K="https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/export?format=csv&gid=1027936274";
@@ -323,8 +224,12 @@ const URL_LAPAK =
 "https://docs.google.com/spreadsheets/d/1KeenLY16qqCOwqn1CgryqHWEe7kSOjW6YmHzsZLy7SE/gviz/tq?tqx=out:json&gid=1556678723";
 
 let W=[],B=[],K=[],S=[],P=[],PG=[],SA=[];
+function goHome(){
+  document.body.classList.add("landing");
 
-/* ===== CSV ===== */
+  // reset semua tab
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+}
 function csv(t){
   let l=t.trim().split("\n");
   let h=l[0].split(",");
@@ -343,6 +248,7 @@ function num(x){
 function rp(x){
   return "Rp "+x.toLocaleString("id-ID");
 }
+
 /* ===== HUJAN DAUN ===== */
 function hujanDaun(){
   setInterval(()=>{
@@ -364,25 +270,29 @@ function hujanDaun(){
     setTimeout(()=>leaf.remove(),10000);
   }, 250);
 }
-/* ===== LOAD ===== */
 async function load(){
-  let [w,b,k,s,p,pg,sa]=await Promise.all([
-    fetch(URL_W).then(r=>r.text()),
-    fetch(URL_B).then(r=>r.text()),
-    fetch(URL_K).then(r=>r.text()),
-    fetch(URL_S).then(r=>r.text()),
-    fetch(URL_PROFILE).then(r=>r.text()),
-    fetch(URL_PENGUMUMAN).then(r=>r.text()),
-    fetch(URL_SALDO).then(r=>r.text())
-  ]);
+  try{
+    let [w,b,k,s,p,pg,sa]=await Promise.all([
+      fetch(URL_W).then(r=>r.text()),
+      fetch(URL_B).then(r=>r.text()),
+      fetch(URL_K).then(r=>r.text()),
+      fetch(URL_S).then(r=>r.text()),
+      fetch(URL_PROFILE).then(r=>r.text()),
+      fetch(URL_PENGUMUMAN).then(r=>r.text()),
+      fetch(URL_SALDO).then(r=>r.text())
+    ]);
 
-  W=csv(w); B=csv(b); K=csv(k); S=csv(s);
-  P=csv(p); PG=csv(pg); SA=csv(sa);
+    W=csv(w); B=csv(b); K=csv(k); S=csv(s);
+    P=csv(p); PG=csv(pg); SA=csv(sa);
 
-  render();
+    render();
+
+  }catch(e){
+    alert("Gagal load data. Pastikan Google Sheet public.");
+    console.log(e);
+  }
 }
 
-/* ===== RENDER ===== */
 function render(){
 
   let iuran=B.reduce((a,b)=>a+num(b.jumlah),0);
@@ -692,21 +602,19 @@ function loadMedia(){
   });
 
 }
-
 function openTab(id){
+  document.body.classList.remove("landing");
+
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-
-  // 🔥 MEDIA FIX ANTI HITAM
   if(id === "Media"){
-    setTimeout(()=>{
-      loadMedia();
-    }, 200); // kasih delay biar tab sudah render dulu
+    setTimeout(()=>loadMedia(),200);
   }
 
   if(id === "iklan"){
     loadIklan();
   }
+
 }
 
 function toggleMode(){
@@ -714,7 +622,8 @@ function toggleMode(){
 }
 
 load();
-
+hujanDaun();
+goHome();
 </script>
 
 </body>
